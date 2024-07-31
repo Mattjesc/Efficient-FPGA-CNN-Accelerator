@@ -1,5 +1,7 @@
 # Efficient FPGA-Based Accelerator for Convolutional Neural Networks
 
+![Project Meme (2)](https://github.com/user-attachments/assets/2735cd71-f126-432d-8def-e28efa105c5a)
+
 This project is a refined implementation of an FPGA-based accelerator for convolutional neural networks, building upon the foundation laid by the project referenced in [this repository](https://github.com/thedatabusdotio/fpga-ml-accelerator). While inspired by the original design, significant enhancements and optimizations have been made to improve efficiency and performance.
 
 ## Overview
@@ -89,7 +91,50 @@ The testbench (`accelerator_tb.v`) simulates the entire design, providing variou
 
 ### Waveform Screenshots
 
+![SimulationWaveform1](https://github.com/user-attachments/assets/2998b75c-7a98-44be-af85-0454d2758cfa)
+
+![SimulationWaveform2](https://github.com/user-attachments/assets/fa6b92ec-96d3-4bdc-a0c4-72479a7bfd60)
+
 The simulation waveforms provide insights into the module's internal operations and the overall data flow. The outputs and state transitions are logged, showcasing the module's response to different inputs and operational conditions.
+
+### Signal Definitions
+
+1. **Clock (`clk`)**: The primary timing reference for the design, used to synchronize operations.
+2. **Reset (`rst`)**: Initializes the system to a known state, ensuring proper startup conditions.
+3. **Enable (`en`)**: Activates the processing pipeline, allowing operations to commence.
+4. **Activation Input (`activation_in`)**: Represents the input feature map data, which is fed into the convolution module.
+5. **Weights (`weight`)**: The filter weights used for the convolution operation.
+6. **Pooling Type (`pool_type`)**: Determines the type of pooling operation (00: max, 01: avg, 10: min) to be applied.
+7. **Data Output (`data_out`)**: The processed output data post-pooling, representing the result of the convolution and pooling operations.
+8. **Valid Output (`valid_out`)**: Indicates when the `data_out` signal is carrying valid data that can be read.
+9. **Done (`done`)**: Signals the completion of the current processing cycle, allowing the system to prepare for new input data.
+10. **Test Activation (`test_ac...`)**: Represents the input test vector for activations used in the testbench.
+11. **Test Weights (`test_we...`)**: Represents the input test vector for weights used in the testbench.
+12. **Error Counter (`error_c...`)**: Counts the number of discrepancies between expected and actual outputs in the testbench.
+13. **Linear Feedback Shift Register (`lfsr`)**: A pseudo-random number generator used in the testbench to generate test vectors for activations and weights.
+
+### Key Observations from Simulation Results
+
+The provided waveform screenshots illustrate various aspects of the accelerator's operation:
+
+- **Clock and Reset Signals**: The `clk` signal provides the clock timing for all synchronous elements, while the `rst` signal is used to reset the system to its initial state, ensuring proper initialization before starting operations.
+
+- **Enable Signal (`en`)**: This signal initiates the processing when set, indicating the start of data processing within the accelerator. It is crucial for controlling when the accelerator begins processing the input data.
+
+- **Activation and Weight Inputs**: The `activation_in` and `weight` signals carry the input data for convolution operations. The changes in these signals correspond to different stages in the convolution computation, highlighting the dynamic nature of the data being processed.
+
+- **Pooling Configuration (`pool_type`)**: This signal determines the type of pooling (max, average, or min) applied to the convolution outputs, showcasing the flexibility of the accelerator in handling different pooling methods.
+
+- **Data Output (`data_out`) and Validity (`valid_out`)**: The `data_out` signal presents the final output data after processing, while `valid_out` indicates when this output is valid and can be used for further processing or analysis. These signals confirm the successful operation of the accelerator's data path, from convolution to pooling.
+
+- **Completion Signal (`done`)**: This signal indicates the completion of a data processing cycle, allowing the system to either output the result or prepare for the next set of inputs. It provides a clear indication of the end of an operation, facilitating synchronization with other system components.
+
+- **Testbench Signals**:
+  - **Test Activation and Weights**: These signals (`test_ac...` and `test_we...`) are used for feeding specific input data into the accelerator, simulating different operating conditions and scenarios.
+  - **Error Counter (`error_c...`)**: This signal tracks any mismatches between expected and actual outputs, providing a measure of the system's correctness during testing.
+  - **Linear Feedback Shift Register (`lfsr`)**: Utilized in the testbench for generating pseudo-random test vectors, the `lfsr` aids in creating diverse testing conditions, ensuring comprehensive verification of the accelerator's functionality.
+
+Overall, the simulation results captured in these waveforms validate the correct functionality and synchronization of the accelerator's components. The observed data flow and state transitions align with the expected behavior, confirming that the design meets its intended specifications and is ready for further testing and potential deployment.
 
 ## Synthesis Results
 
@@ -467,7 +512,7 @@ The implementation log provided details the process of implementing the design n
    - **Timing**: The design met the timing constraints with positive slack.
    - **Resource Utilization**: Although not detailed in the log, it appears the design is resource-efficient given the absence of issues during placement and routing.
 
-### Conclusion
+### Implementation Summary
 
 The implementation process for the `accelerator` design was executed successfully without any critical warnings or errors. The design met all necessary timing requirements, passed DRC checks, and successfully generated the final routed design checkpoint. The log indicates a smooth and efficient implementation process, reflecting well on the design's initial quality and the effectiveness of the Vivado tool's optimization and routing algorithms.
 
